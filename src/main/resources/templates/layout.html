@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title th:text="${pageTitle} ?: 'Movie Reviews'">Movie Reviews</title>
-  <link rel="stylesheet" href="/css/main.css">
+    <title>Layout Base</title>
 </head>
 <body>
-<header>
-  <nav>
-    <a href="/">Home</a>
-    <a href="/movies">Filmes</a>
-  </nav>
-</header>
-<main>
-  <div th:insert="${content}"></div>
-</main>
+    <header>
+        <h1>Meu Sistema</h1>
+        <nav>
+            <a href="/auth/login">Login</a> |
+            <a href="/auth/register">Cadastro</a>
+        </nav>
+    </header>
+
+    <main th:fragment="content">
+    </main>
+
+    <footer>
+        <p>&copy; 2025 - DSII-P2</p>
+    </footer>
 </body>
 </html>

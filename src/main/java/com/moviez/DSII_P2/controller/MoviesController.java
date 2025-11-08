@@ -9,7 +9,7 @@ public class MoviesController {
   @GetMapping("/movies")
   public String list(Model model) {
     model.addAttribute("pageTitle", "Filmes");
-    model.addAttribute("movies", java.util.List.of()); 
+    model.addAttribute("movies", java.util.List.of());
     return "movies/list";
   }
 }

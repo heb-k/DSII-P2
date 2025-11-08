@@ -1,14 +1,21 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="layout :: content">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cadastro</title>
+</head>
 <body>
-<section>
-  <h1>Criar conta</h1>
-  <form method="post" action="/auth/register" th:object="${user}">
-    <input type="text" th:field="*{name}" placeholder="Nome" required>
-    <input type="email" th:field="*{email}" placeholder="Email" required>
-    <input type="password" th:field="*{passwordHash}" placeholder="Senha" required>
-    <button>Cadastrar</button>
-  </form>
-</section>
+    <h1>Página de Cadastro</h1>
+      <form action="/auth/register" method="post" th:object="${user}">
+          <label>Nome:</label>
+          <input type="text" th:field="*{name}" />
+          <br/>
+          <label>Email:</label>
+          <input type="email" th:field="*{email}" />
+          <br/>
+          <label>Senha:</label>
+          <input type="password" th:field="*{passwordHash}" />
+          <br/>
+          <button type="submit">Cadastrar</button>
+      </form>
 </body>
 </html>
