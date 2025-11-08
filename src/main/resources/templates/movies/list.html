@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layout :: content">
+<body>
+<section>
+  <h1>Filmes</h1>
+  <p>Lista de filmes</p>
+  <ul>
+    <li th:each="m : ${movies}" th:text="${m}">Filme</li>
+  </ul>
+</section>
+</body>
+</html>

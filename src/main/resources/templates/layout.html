@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${pageTitle} ?: 'Movie Reviews'">Movie Reviews</title>
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+<header>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/movies">Filmes</a>
+  </nav>
+</header>
+<main>
+  <div th:insert="${content}"></div>
+</main>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layout :: content">
+<body>
+<section>
+  <h1>Criar conta</h1>
+  <form method="post" action="/auth/register" th:object="${user}">
+    <input type="text" th:field="*{name}" placeholder="Nome" required>
+    <input type="email" th:field="*{email}" placeholder="Email" required>
+    <input type="password" th:field="*{passwordHash}" placeholder="Senha" required>
+    <button>Cadastrar</button>
+  </form>
+</section>
+</body>
+</html>
