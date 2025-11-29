@@ -1,9 +1,381 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="layout :: content">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${filme.title}">Detalhes</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            background: #0e0e0e;
+            color: #eee;
+        }
+
+        .page {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        /* ----- CARD DO FILME ----- */
+        .movie-card {
+            display: flex;
+            background: #1a1a1a;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 25px rgba(0,0,0,0.6);
+        }
+
+        .movie-poster {
+            width: 40%;
+        }
+
+        .movie-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .movie-info {
+            width: 60%;
+            padding: 35px;
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #ffcc00;
+            font-size: 2.3rem;
+        }
+
+        .metadata {
+            margin-top: 10px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .tag {
+            background: #2a2a2a;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #ccc;
+            border: 1px solid #444;
+        }
+
+        .star {
+            color: #ffcc00;
+        }
+
+        .overview-title {
+            margin-top: 25px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-left: 4px solid #ffcc00;
+            padding-left: 10px;
+        }
+
+        .overview {
+            margin-top: 10px;
+            line-height: 1.6;
+            color: #ddd;
+        }
+
+        a.back-btn {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 12px 25px;
+            background: #ffcc00;
+            color: #000;
+            border-radius: 30px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        a.back-btn:hover {
+            transform: scale(1.05);
+            background: #e6b800;
+        }
+
+        /* ----- REVIEW FORM ----- */
+        h2 {
+            margin-top: 50px;
+            color: #ffcc00;
+        }
+
+        form {
+            background: #1a1a1a;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 15px;
+        }
+
+        form label {
+            display: block;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background: #111;
+            color: #eee;
+            margin-top: 5px;
+            font-size: 1rem;
+        }
+
+        /* Star Rating */
+        .star-rating {
+            display: flex;
+            flex-direction: row;
+            gap: 5px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        /* clickable star elements (we use JS to set hidden input value allowing half-stars) */
+        .star-clickable {
+            font-size: 2.5rem;
+            color: #555;
+            cursor: pointer;
+            transition: color 0.15s;
+            user-select: none;
+        }
+
+        .star-clickable.full { color: #ffcc00; }
+        .star-clickable.half { color: transparent; background: linear-gradient(90deg, #ffcc00 50%, #555 50%); -webkit-background-clip: text; background-clip: text; }
+        .star-clickable.empty { color: #555; }
+
+        textarea {
+            height: 120px;
+            resize: none;
+        }
+
+        form button {
+            margin-top: 20px;
+            padding: 10px 25px;
+            background: #ffcc00;
+            border: none;
+            color: #000;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        form button:hover {
+            background: #e6b800;
+            transform: scale(1.03);
+        }
+
+        /* ----- REVIEW LIST ----- */
+        .review-card {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border-left: 4px solid #ffcc00;
+        }
+
+        .review-rating {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffcc00;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .review-star {
+            font-size: 1.5rem;
+        }
+
+        .review-star.star-filled {
+            color: #ffcc00;
+        }
+
+        /* half star: left half filled, right half empty using gradient clipped to text */
+        .review-star.star-half {
+            color: transparent;
+            background: linear-gradient(90deg, #ffcc00 50%, #555 50%);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .review-star.star-empty {
+            color: #555;
+        }
+
+        .rating-text {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        .review-author {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .review-comment {
+            color: #ddd;
+            margin-top: 5px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+
 <body>
-<section>
-  <h1>Detalhe do filme</h1>
-  <p>Conteúdo</p>
-</section>
+<div class="page">
+
+    <!-- CARD DO FILME -->
+    <div class="movie-card">
+        <div class="movie-poster">
+            <img th:if="${filme.posterPath != null}"
+                 th:src="'https://image.tmdb.org/t/p/w500' + ${filme.posterPath}">
+            <img th:unless="${filme.posterPath != null}"
+                 src="https://via.placeholder.com/500x750?text=Sem+Imagem">
+        </div>
+
+        <div class="movie-info">
+            <h1 th:text="${filme.title}">Título do Filme</h1>
+
+            <div class="metadata">
+                <span class="tag">📅 <span th:text="${filme.releaseDate}"></span></span>
+                <!-- Map TMDB rating (0-100 or 0-10) to 0-5 stars (allow half-stars) -->
+                <span class="tag" th:with="avg=${filme.voteAverage}, stars=${avg > 10 ? (avg/20.0) : (avg/2.0)}">
+                    <span th:each="i : ${#numbers.sequence(1,5)}"
+                          th:classappend="${stars >= i} ? 'star-filled' : (${stars >= i - 0.5} ? 'star-half' : 'star-empty')"
+                          class="review-star">★</span>
+                    <span class="rating-text" th:text="${avg > 10 ? '(' + avg + '/100)' : '(' + avg + '/10)'}"></span>
+                </span>
+            </div>
+
+            <div class="overview-title">Sinopse</div>
+            <p class="overview" th:text="${filme.overview}">Descrição...</p>
+
+            <a href="/movies" class="back-btn">⬅ Voltar</a>
+        </div>
+    </div>
+
+
+    <!-- FORM REVIEW -->
+    <h2>Enviar Review</h2>
+
+        <form th:action="@{/reviews/create/{id}(id=${filme.id})}" method="post" id="reviewForm">
+            <label>Avaliação (Clique nas estrelas) <span style="color: #ff4444;">*</span></label>
+        <div class="star-rating" id="starRating">
+                <input type="hidden" name="rating" id="ratingInput" />
+            <span class="star-clickable" data-value="1">★</span>
+            <span class="star-clickable" data-value="2">★</span>
+            <span class="star-clickable" data-value="3">★</span>
+            <span class="star-clickable" data-value="4">★</span>
+            <span class="star-clickable" data-value="5">★</span>
+        </div>
+            <span id="ratingError" style="color: #ff4444; font-size: 0.9rem; display: none;">Por favor, selecione uma avaliação</span>
+
+        <label>Comentário</label>
+        <textarea name="comment" required></textarea>
+
+        <button type="submit">Enviar Review</button>
+    </form>
+
+
+    <!-- LISTA DE REVIEWS -->
+    <h2>Reviews</h2>
+
+    <div th:if="${#lists.isEmpty(reviews)}">
+        <p>Não há reviews para este filme.</p>
+    </div>
+
+    <div th:each="r : ${reviews}" class="review-card">
+        <div class="review-rating">
+            <span th:with="stars=${r.rating}">
+                <span th:each="i : ${#numbers.sequence(1,5)}"
+                      th:classappend="${stars >= i} ? 'star-filled' : (${stars >= i - 0.5} ? 'star-half' : 'star-empty')"
+                      class="review-star">★</span>
+            </span>
+            <span class="rating-text" th:text="'(' + ${r.rating} + '/5)'"></span>
+        </div>
+        <div class="review-author" th:if="${r.user != null}" 
+             th:text="'Por: ' + ${r.user.usernameField != null && !r.user.usernameField.isEmpty() ? r.user.usernameField : r.user.login}"></div>
+        <p class="review-comment" th:text="${r.comment}"></p>
+    </div>
+
+    <script>
+        // Star rating JS: supports half-star selection by click position
+        (function(){
+            const container = document.getElementById('starRating');
+            if(!container) return;
+            const stars = Array.from(container.querySelectorAll('.star-clickable'));
+            const input = document.getElementById('ratingInput');
+
+            function updateDisplay(value) {
+                // value is number like 3, 3.5, etc.
+                stars.forEach(s => {
+                    const v = Number(s.getAttribute('data-value'));
+                    if (value >= v) {
+                        s.classList.add('full'); s.classList.remove('half','empty');
+                    } else if (value >= v - 0.5) {
+                        s.classList.add('half'); s.classList.remove('full','empty');
+                    } else {
+                        s.classList.add('empty'); s.classList.remove('full','half');
+                    }
+                });
+            }
+
+            stars.forEach(s => {
+                s.addEventListener('mousemove', (ev) => {
+                    // visual hover preview (not setting value)
+                    const rect = s.getBoundingClientRect();
+                    const relX = ev.clientX - rect.left;
+                    const isLeft = relX < rect.width/2;
+                    const preview = Number(s.dataset.value) - (isLeft ? 0.5 : 0);
+                    updateDisplay(preview);
+                });
+                s.addEventListener('mouseleave', () => {
+                    // restore to current input value
+                    const val = parseFloat(input.value) || 0;
+                    updateDisplay(val);
+                });
+                s.addEventListener('click', (ev) => {
+                    const rect = s.getBoundingClientRect();
+                    const relX = ev.clientX - rect.left;
+                    const isLeft = relX < rect.width/2;
+                    const newVal = Number(s.dataset.value) - (isLeft ? 0.5 : 0);
+                    input.value = newVal;
+                    updateDisplay(newVal);
+                });
+            });
+
+            // initialize to 0
+            input.value = '';
+            updateDisplay(0);
+        })();
+    
+            // Validação do formulário de review
+            document.getElementById('reviewForm').addEventListener('submit', function(e) {
+                const ratingInput = document.getElementById('ratingInput');
+                const ratingError = document.getElementById('ratingError');
+            
+                if (!ratingInput.value || parseFloat(ratingInput.value) === 0) {
+                    e.preventDefault();
+                    ratingError.style.display = 'block';
+                    document.getElementById('starRating').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return false;
+                }
+                ratingError.style.display = 'none';
+            });
+
+            </script>
+        
+
+</div>
 </body>
 </html>

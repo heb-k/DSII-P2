@@ -1,21 +1,26 @@
 package com.moviez.DSII_P2.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.Lob;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter @Setter
 public class Movie {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    public Long getId() {
-        return id;
-    }
+    private String title;
+    
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String overview;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private String posterPath;
+    private String releaseDate;
+    private Double voteAverage;
 }

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Filmes</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #111; color: #fff; margin: 0; padding-bottom: 50px; }
+        
+        /* Header e Busca */
+        .header-container { text-align: center; padding: 20px; background-color: #1e1e1e; margin-bottom: 20px;}
+        input[type="text"] { padding: 10px; width: 300px; border-radius: 5px; border: none; }
+        button { padding: 10px 20px; border-radius: 5px; border: none; background-color: #ffcc00; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #e6b800; }
+        a.logout { color: #ff4444; text-decoration: none; font-weight: bold; float: right; margin-right: 20px;}
+
+        /* Estilos das Seções */
+        h2 { margin-left: 20px; color: #ffcc00; border-left: 5px solid #ffcc00; padding-left: 10px; }
+        
+        /* Container Horizontal (Scroll) */
+        .scroll-container {
+            display: flex;
+            overflow-x: auto;
+            padding: 20px;
+            gap: 20px;
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: #ffcc00 #1e1e1e;
+        }
+        /* Scrollbar Chrome/Safari */
+        .scroll-container::-webkit-scrollbar { height: 8px; }
+        .scroll-container::-webkit-scrollbar-track { background: #1e1e1e; }
+        .scroll-container::-webkit-scrollbar-thumb { background-color: #ffcc00; border-radius: 10px; }
+
+        /* Grid Container (Usado apenas na busca) */
+        .grid-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 20px; }
+
+        /* Cards */
+        .card {
+            background: #1e1e1e; border-radius: 10px; overflow: hidden;
+            min-width: 180px; width: 180px; /* Tamanho fixo para o scroll */
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
+            display: flex; flex-direction: column;
+        }
+        .card:hover { transform: scale(1.05); z-index: 10; }
+        .card img { width: 100%; height: 270px; object-fit: cover; }
+        .card-content { padding: 10px; flex-grow: 1; }
+        .card-content h3 { font-size: 1rem; margin: 5px 0; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-content p { font-size: 0.8rem; color: #ccc; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        /* Modal de username */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-box {
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255,204,0,0.3);
+            max-width: 400px;
+            width: 90%;
+        }
+        .modal-box h2 { color: #ffcc00; margin-top: 0; text-align: center; }
+        .modal-box label { display: block; margin-top: 15px; font-weight: bold; }
+        .modal-box input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #444;
+            background: #111;
+            color: #fff;
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+        .modal-box input:focus { border-color: #ffcc00; outline: none; }
+        .modal-box .feedback {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            min-height: 20px;
+        }
+        .modal-box .feedback.available { color: #00ff00; }
+        .modal-box .feedback.unavailable { color: #ff4444; }
+        .modal-box button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            background: #ffcc00;
+            border: none;
+            color: #000;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .modal-box button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <a href="/logout" class="logout">Sair</a>
+        <h1>Moviez App</h1>
+        <form action="/movies" method="get">
+            <input type="text" name="nome" placeholder="Buscar filme..." th:value="${param.nome}">
+            <button type="submit">Buscar</button>
+            <a th:if="${searching}" href="/movies" style="color: #ccc; margin-left: 10px; text-decoration: underline;">Limpar busca</a>
+        </form>
+    </div>
+
+    <div th:if="${searching}">
+        <h2 style="text-align:center;">Resultados da Busca</h2>
+        <div class="grid-container">
+            <div th:each="filme : ${searchResults}" class="card">
+                <img th:if="${filme.posterPath != null}" th:src="'https://image.tmdb.org/t/p/w342' + ${filme.posterPath}" alt="Poster">
+                <img th:unless="${filme.posterPath != null}" src="https://via.placeholder.com/500x750?text=Sem+Imagem" alt="Sem Imagem">
+                <div class="card-content">
+                    <h3 th:text="${filme.title}"></h3>
+                    <p th:text="${filme.overview}"></p>
+                </div>
+            </div>
+            <p th:if="${#lists.isEmpty(searchResults)}" style="text-align:center; width:100%;">Nenhum filme encontrado.</p>
+        </div>
+    </div>
+
+    <div th:unless="${searching}">
+        
+        <h2>🔥 Populares</h2>
+        <div class="scroll-container">
+            <div th:each="filme : ${popularMovies}" class="card">
+    
+    <a th:href="@{/movies/{id}(id=${filme.id})}">
+        <img th:if="${filme.posterPath != null}" 
+             th:src="'https://image.tmdb.org/t/p/w185' + ${filme.posterPath}" 
+             alt="Poster">
+    </a>
+
+    <div class="card-content">
+        <a th:href="@{/movies/{id}(id=${filme.id})}" style="text-decoration: none; color: inherit;">
+            <h3 th:text="${filme.title}"></h3>
+        </a>
+    </div>
+</div>
+        </div>
+
+        <h2>⭐ Melhor Avaliados (Top Rated)</h2>
+        <div class="scroll-container">
+            <div th:each="filme : ${topRatedMovies}" class="card">
+                <a th:href="@{/movies/{id}(id=${filme.id})}">
+                <img th:if="${filme.posterPath != null}" th:src="'https://image.tmdb.org/t/p/w342' + ${filme.posterPath}" alt="Poster">
+                </a>
+                <div class="card-content">
+                    <a th:href="@{/movies/{id}(id=${filme.id})}" style="text-decoration: none; color: inherit;">
+                    <h3 th:text="${filme.title}" th:title="${filme.title}"></h3>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎬 Em Cartaz (Now Playing)</h2>
+        <div class="scroll-container">
+            <div th:each="filme : ${nowPlayingMovies}" class="card">
+                <a th:href="@{/movies/{id}(id=${filme.id})}">
+                <img th:if="${filme.posterPath != null}" th:src="'https://image.tmdb.org/t/p/w342' + ${filme.posterPath}" alt="Poster">
+                </a>
+                <div class="card-content">
+                    <a th:href="@{/movies/{id}(id=${filme.id})}">
+                    <h3 th:text="${filme.title}" th:title="${filme.title}"></h3>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal para escolher username -->
+    <div class="modal-overlay" id="usernameModal">
+        <div class="modal-box">
+            <h2>👤 Escolha seu Username</h2>
+            <p style="text-align:center; color: #ccc;">Este será seu identificador único no sistema!</p>
+            
+            <form id="usernameForm" action="/auth/set-username" method="post">
+                <label for="usernameInput">Username</label>
+                <input type="text" id="usernameInput" name="username" 
+                       placeholder="Digite seu username..." 
+                       required minlength="3" maxlength="20" 
+                       pattern="[a-zA-Z0-9_]+" 
+                       title="Apenas letras, números e underscore">
+                <div class="feedback" id="usernameFeedback"></div>
+                
+                <button type="submit" id="submitBtn" disabled>Confirmar Username</button>
+            </form>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        // Check if user needs to set username (passed from controller)
+        const needsUsername = /*[[${needsUsername}]]*/ false;
+        
+        if (needsUsername) {
+            document.getElementById('usernameModal').classList.add('show');
+        }
+        
+        const usernameInput = document.getElementById('usernameInput');
+        const feedback = document.getElementById('usernameFeedback');
+        const submitBtn = document.getElementById('submitBtn');
+        let checkTimeout = null;
+        
+        usernameInput.addEventListener('input', function() {
+            const value = this.value.trim();
+            
+            // Clear previous timeout
+            clearTimeout(checkTimeout);
+            
+            if (value.length < 3) {
+                feedback.textContent = 'Mínimo 3 caracteres';
+                feedback.className = 'feedback unavailable';
+                submitBtn.disabled = true;
+                return;
+            }
+            
+            // Check with server after 500ms delay
+            checkTimeout = setTimeout(() => {
+                fetch('/auth/check-username?username=' + encodeURIComponent(value))
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.available) {
+                            feedback.textContent = '✓ Username disponível!';
+                            feedback.className = 'feedback available';
+                            submitBtn.disabled = false;
+                        } else {
+                            feedback.textContent = '✗ Username já está em uso';
+                            feedback.className = 'feedback unavailable';
+                            submitBtn.disabled = true;
+                        }
+                    })
+                    .catch(err => {
+                        feedback.textContent = 'Erro ao verificar';
+                        feedback.className = 'feedback unavailable';
+                        submitBtn.disabled = true;
+                    });
+            }, 500);
+        });
+    </script>
+
+</body>
+</html>
