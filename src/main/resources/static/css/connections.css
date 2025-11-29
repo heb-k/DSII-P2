@@ -1,0 +1,168 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: #eee;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px;
+}
+
+a.back {
+    display: inline-block;
+    margin-bottom: 25px;
+    color: #ccc;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+a.back:hover {
+    text-decoration: underline;
+    color: #ffcc00;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #222;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #ffcc00;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.header h1 {
+    margin: 0;
+    color: #ffcc00;
+    font-size: 1.8rem;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #333;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: #aaa;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+}
+
+.tab-btn:hover {
+    color: #ffcc00;
+}
+
+.tab-btn.active {
+    color: #ffcc00;
+    border-bottom-color: #ffcc00;
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* User List */
+.user-list {
+    display: grid;
+    gap: 15px;
+}
+
+.user-item {
+    background: #1a1a1a;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.user-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 204, 0, 0.2);
+}
+
+.user-link {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #222;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #ffcc00;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.user-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.user-login {
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.empty-msg {
+    text-align: center;
+    color: #777;
+    margin-top: 40px;
+    font-size: 1.1rem;
+}

@@ -6,10 +6,15 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +35,9 @@ public class AuthenticationController {
     @Autowired
     private UserRepository userRepository;
 
+     @Autowired
+    private AuthenticationManager authenticationManager;
+
     @GetMapping("/login")
     public String loginPage() {
         return "auth/login"; // nome do HTML
@@ -39,27 +47,54 @@ public class AuthenticationController {
     @GetMapping("/register")
     public String registerPage(Model model) {
         model.addAttribute("user", new RegisterDTO(null, null, null)); // <---- REQUIRED
+    
+        
         return "auth/register"; // nome do HTML
     }
     
 
     @PostMapping("/register")
-    public String register(RegisterDTO data, Model model) {
+    public String register(RegisterDTO data, Model model, HttpServletRequest request, HttpServletResponse response) {
 
         if (userRepository.findByLogin(data.login()) != null) {
-            model.addAttribute("error", "Usuário já existe");
-            return "auth/register";
-        }
+        model.addAttribute("error", "Usuário já existe");
+        // CORREÇÃO: Adicione o objeto 'user' de volta ao Model
+        model.addAttribute("user", data); 
+        return "redirect:/auth/register?usuariojaexiste=true";
+    }
 
         String encrypted = new BCryptPasswordEncoder().encode(data.password());
         User user = new User(data.login(), encrypted, data.role());
-        userRepository.save(user);
+        
+        // Salva o usuário no banco de dados
+        User savedUser = userRepository.save(user);
 
-        // Passar credenciais para auto-login via formulário
-        model.addAttribute("username", data.login());
-        model.addAttribute("password", data.password());
-        return "auth/auto-login";
-    }    // Endpoint para verificar disponibilidade de username (AJAX)
+        // Autentica o usuário automaticamente no backend (Spring Security)
+        try {
+            Authentication authentication = new UsernamePasswordAuthenticationToken(data.login(), data.password());
+            Authentication auth = authenticationManager.authenticate(authentication);
+
+         // Coloca o usuário autenticado no SecurityContext
+         SecurityContextHolder.getContext().setAuthentication(auth);
+         // Garante que o contexto de segurança seja persistido na sessão
+         request.getSession(true)
+             .setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                     SecurityContextHolder.getContext());
+
+            // Redireciona para a página principal de filmes
+            if (savedUser != null && savedUser.getId() != null) {
+                return "/auth/auto-login";
+            } else {
+                model.addAttribute("error", "Erro ao salvar usuário");
+                return "auth/register";
+            }
+        } catch (Exception e) {
+            model.addAttribute("error", "Erro ao autenticar usuário");
+            return "auth/register";
+        }
+    }  
+    
+    // Endpoint para verificar disponibilidade de username (AJAX)
     @GetMapping("/check-username")
     @ResponseBody
     public ResponseEntity<Map<String, Boolean>> checkUsername(@RequestParam String username) {

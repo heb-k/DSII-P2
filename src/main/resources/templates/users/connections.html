@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title th:text="${profileUser.usernameField != null && !profileUser.usernameField.isEmpty() ? profileUser.usernameField + ' - Conexões' : profileUser.login + ' - Conexões'}">Conexões</title>
+    <link rel="stylesheet" th:href="@{/css/connections.css}">
+</head>
+<body>
+<div class="container">
+    <a th:href="@{/users/{username}(username=${profileUser.usernameField})}" class="back">⬅ Voltar ao Perfil</a>
+    
+    <div class="header">
+        <div class="avatar" th:if="${profileUser.photoUrl != null}">
+            <img th:src="${profileUser.photoUrl}" alt="Avatar" />
+        </div>
+        <div class="avatar" th:unless="${profileUser.photoUrl != null}" 
+             th:text="${profileUser.usernameField != null && !profileUser.usernameField.isEmpty() ? profileUser.usernameField.substring(0,1).toUpperCase() : profileUser.login.substring(0,1).toUpperCase()}">
+        </div>
+        <h1 th:text="${profileUser.usernameField != null && !profileUser.usernameField.isEmpty() ? profileUser.usernameField : profileUser.login}"></h1>
+    </div>
+
+    <!-- Tabs para alternar entre Seguidores e Seguindo -->
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="followers" onclick="showTab('followers', this)">
+            Seguidores (<span th:text="${#lists.size(followersList)}">0</span>)
+        </button>
+        <button class="tab-btn" data-tab="following" onclick="showTab('following', this)">
+            Seguindo (<span th:text="${#lists.size(followingList)}">0</span>)
+        </button>
+    </div>
+
+    <!-- Lista de Seguidores -->
+    <div id="followers" class="tab-content active">
+        <div th:if="${#lists.isEmpty(followersList)}" class="empty-msg">
+            Nenhum seguidor ainda.
+        </div>
+        <div th:if="${!#lists.isEmpty(followersList)}" class="user-list">
+            <div th:each="follow : ${followersList}" class="user-item">
+                <a th:href="@{/users/{username}(username=${follow.follower.usernameField})}" class="user-link">
+                    <div class="user-avatar" th:if="${follow.follower.photoUrl != null}">
+                        <img th:src="${follow.follower.photoUrl}" alt="Avatar" />
+                    </div>
+                    <div class="user-avatar" th:unless="${follow.follower.photoUrl != null}" 
+                         th:text="${follow.follower.usernameField != null && !follow.follower.usernameField.isEmpty() ? follow.follower.usernameField.substring(0,1).toUpperCase() : follow.follower.login.substring(0,1).toUpperCase()}">
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name" th:text="${follow.follower.usernameField != null && !follow.follower.usernameField.isEmpty() ? follow.follower.usernameField : follow.follower.login}"></span>
+                        <span class="user-login" th:if="${follow.follower.usernameField != null && !follow.follower.usernameField.isEmpty()}" 
+                              th:text="'@' + ${follow.follower.login}"></span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Seguindo -->
+    <div id="following" class="tab-content">
+        <div th:if="${#lists.isEmpty(followingList)}" class="empty-msg">
+            Não está seguindo ninguém ainda.
+        </div>
+        <div th:if="${!#lists.isEmpty(followingList)}" class="user-list">
+            <div th:each="follow : ${followingList}" class="user-item">
+                <a th:href="@{/users/{username}(username=${follow.following.usernameField})}" class="user-link">
+                    <div class="user-avatar" th:if="${follow.following.photoUrl != null}">
+                        <img th:src="${follow.following.photoUrl}" alt="Avatar" />
+                    </div>
+                    <div class="user-avatar" th:unless="${follow.following.photoUrl != null}" 
+                         th:text="${follow.following.usernameField != null && !follow.following.usernameField.isEmpty() ? follow.following.usernameField.substring(0,1).toUpperCase() : follow.following.login.substring(0,1).toUpperCase()}">
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name" th:text="${follow.following.usernameField != null && !follow.following.usernameField.isEmpty() ? follow.following.usernameField : follow.following.login}"></span>
+                        <span class="user-login" th:if="${follow.following.usernameField != null && !follow.following.usernameField.isEmpty()}" 
+                              th:text="'@' + ${follow.following.login}"></span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/connections.js}"></script>
+</body>
+</html>

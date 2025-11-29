@@ -35,7 +35,36 @@ public class MovieService {
 
             if (results != null) {
                 for (JsonNode node : results) {
-                    filmes.add(convertJson(node));
+                    Movie movie = convertJson(node);
+                    
+                    // Se não tiver overview em pt-BR, busca em inglês como fallback
+                    if ((movie.getOverview() == null || movie.getOverview().trim().isEmpty()) 
+                        && movie.getId() != null) {
+                        try {
+                            String urlEn = apiConfig.getBaseUrl()
+                                    + "/movie/" + movie.getId()
+                                    + "?api_key=" + apiConfig.getApiKey()
+                                    + "&language=en-US";
+                            
+                            String respostaEn = client.get(urlEn);
+                            JsonNode nodeEn = mapper.readTree(respostaEn);
+                            
+                            String titleEn = nodeEn.path("title").asText("");
+                            String overviewEn = nodeEn.path("overview").asText("");
+                            
+                            if (!titleEn.isEmpty()) {
+                                movie.setTitle(titleEn);
+                            }
+                            if (!overviewEn.isEmpty()) {
+                                movie.setOverview(overviewEn);
+                            }
+                        } catch (Exception ex) {
+                            // Se falhar o fallback, mantém o filme com dados originais
+                            ex.printStackTrace();
+                        }
+                    }
+                    
+                    filmes.add(movie);
                 }
             }
         } catch (Exception e) {
@@ -57,7 +86,31 @@ public class MovieService {
         try {
             String resposta = client.get(url);
             JsonNode node = mapper.readTree(resposta);
-            return convertJson(node);
+            Movie movie = convertJson(node);
+            
+            // Se não tiver overview em pt-BR, busca em inglês como fallback
+            if (movie.getOverview() == null || movie.getOverview().trim().isEmpty()) {
+                String urlEn = apiConfig.getBaseUrl()
+                        + "/movie/" + id
+                        + "?api_key=" + apiConfig.getApiKey()
+                        + "&language=en-US";
+                
+                String respostaEn = client.get(urlEn);
+                JsonNode nodeEn = mapper.readTree(respostaEn);
+                
+                // Usa título e sinopse em inglês se disponíveis
+                String titleEn = nodeEn.path("title").asText("");
+                String overviewEn = nodeEn.path("overview").asText("");
+                
+                if (!titleEn.isEmpty()) {
+                    movie.setTitle(titleEn);
+                }
+                if (!overviewEn.isEmpty()) {
+                    movie.setOverview(overviewEn);
+                }
+            }
+            
+            return movie;
         } catch (Exception e) {
             e.printStackTrace();
             return null;

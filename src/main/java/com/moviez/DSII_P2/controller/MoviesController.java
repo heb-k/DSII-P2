@@ -37,8 +37,13 @@ public class MoviesController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated() && !auth.getName().equals("anonymousUser")) {
             User user = userRepository.findByLogin(auth.getName());
-            if (user != null && (user.getUsernameField() == null || user.getUsernameField().isEmpty())) {
-                model.addAttribute("needsUsername", true);
+            if (user != null) {
+                if (user.getUsernameField() == null || user.getUsernameField().isEmpty()) {
+                    model.addAttribute("needsUsername", true);
+                } else {
+                    model.addAttribute("needsUsername", false);
+                    model.addAttribute("currentUsername", user.getUsernameField());
+                }
             } else {
                 model.addAttribute("needsUsername", false);
             }
@@ -69,6 +74,9 @@ public class MoviesController {
             model.addAttribute("searching", false);
         }
 
+        // Add recent reviews for the new tab
+        model.addAttribute("recentReviews", reviewService.getRecentReviews(20));
+
         return "movies";
     }
 
@@ -78,6 +86,20 @@ public class MoviesController {
         model.addAttribute("filme", movieService.getMovieById(id));
         model.addAttribute("reviews", reviewService.getReviewsForMovie(id));
         model.addAttribute("newReview", new Review());
+
+        // Hide review form if user already reviewed this movie
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean alreadyReviewed = false;
+        String currentUserId = null;
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
+            User me = userRepository.findByLogin(auth.getName());
+            if (me != null) {
+                currentUserId = me.getId();
+                alreadyReviewed = reviewService.hasUserReviewed(id, me.getId());
+            }
+        }
+        model.addAttribute("alreadyReviewed", alreadyReviewed);
+        model.addAttribute("currentUserId", currentUserId);
 
         return "movies/detail";
     }

@@ -20,4 +20,27 @@ public class ReviewController {
         reviewService.createReview(movieId, review);
         return "redirect:/movies/" + movieId;
     }
+
+    @PostMapping("/update/{reviewId}")
+    public String updateReview(@PathVariable Long reviewId, 
+                              @RequestParam String comment, 
+                              @RequestParam Double rating,
+                              @RequestParam Long movieId) {
+        try {
+            reviewService.updateReview(reviewId, comment, rating);
+            return "redirect:/movies/" + movieId;
+        } catch (RuntimeException e) {
+            return "redirect:/movies/" + movieId + "?error=unauthorized";
+        }
+    }
+
+    @PostMapping("/delete/{reviewId}")
+    public String deleteReview(@PathVariable Long reviewId, @RequestParam Long movieId) {
+        try {
+            reviewService.deleteReview(reviewId);
+            return "redirect:/movies/" + movieId;
+        } catch (RuntimeException e) {
+            return "redirect:/movies/" + movieId + "?error=unauthorized";
+        }
+    }
 }

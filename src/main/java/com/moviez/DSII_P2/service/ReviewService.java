@@ -55,6 +55,12 @@ public class ReviewService {
             String username = authentication.getName();
             User user = userRepo.findByLogin(username);
             review.setUser(user);
+
+            // Enforce single review per user per movie
+            if (user != null && reviewRepo.existsByMovieIdAndUserId(movieId, user.getId())) {
+                // Return existing review without creating a duplicate
+                return reviewRepo.findByMovieIdAndUserId(movieId, user.getId());
+            }
         }
 
         return reviewRepo.save(review);
@@ -62,5 +68,66 @@ public class ReviewService {
 
     public List<Review> getReviewsForMovie(Long movieId) {
         return reviewRepo.findByMovieId(movieId);
+    }
+
+    // New: get reviews by user id (for profile page)
+    public List<Review> getReviewsByUser(String userId) {
+        return reviewRepo.findByUserId(userId);
+    }
+
+    public boolean hasUserReviewed(Long movieId, String userId) {
+        if (userId == null) return false;
+        return reviewRepo.existsByMovieIdAndUserId(movieId, userId);
+    }
+
+    // Update review
+    public Review updateReview(Long reviewId, String comment, Double rating) {
+        Review review = reviewRepo.findById(reviewId).orElseThrow(() -> 
+            new RuntimeException("Review não encontrada"));
+        
+        // Verify ownership
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName();
+            User user = userRepo.findByLogin(username);
+            if (user != null && review.getUser().getId().equals(user.getId())) {
+                review.setComment(comment);
+                review.setRating(rating);
+                return reviewRepo.save(review);
+            }
+        }
+        throw new RuntimeException("Não autorizado");
+    }
+
+    // Delete review
+    public void deleteReview(Long reviewId) {
+        Review review = reviewRepo.findById(reviewId).orElseThrow(() -> 
+            new RuntimeException("Review não encontrada"));
+        
+        // Verify ownership
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName();
+            User user = userRepo.findByLogin(username);
+            if (user != null && review.getUser().getId().equals(user.getId())) {
+                reviewRepo.delete(review);
+                return;
+            }
+        }
+        throw new RuntimeException("Não autorizado");
+    }
+
+    // Get review by ID
+    public Review getReviewById(Long reviewId) {
+        return reviewRepo.findById(reviewId).orElse(null);
+    }
+
+    // Get recent reviews
+    public List<Review> getRecentReviews(int limit) {
+        return reviewRepo.findAll().stream()
+            .filter(r -> r.getCreatedAt() != null)
+            .sorted((r1, r2) -> r2.getCreatedAt().compareTo(r1.getCreatedAt()))
+            .limit(limit)
+            .toList();
     }
 }

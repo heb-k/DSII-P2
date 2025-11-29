@@ -2,6 +2,8 @@ package com.moviez.DSII_P2.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,6 +19,21 @@ public class SecurityConfigurations {
     @Autowired
     private UserDetailsService authorizationService;
 
+
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder = 
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+
+        // Configura o AuthenticationManager com o UserDetailsService e o PasswordEncoder
+        authenticationManagerBuilder.userDetailsService(authorizationService)
+                                    .passwordEncoder(passwordEncoder());
+
+        // Retorna o AuthenticationManager configurado
+        return authenticationManagerBuilder.build();
+    }
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -24,9 +41,11 @@ public class SecurityConfigurations {
         .csrf(csrf -> csrf.disable())
 
             .authorizeHttpRequests((auth) -> auth
+                .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**").permitAll()
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/").permitAll()
                 .requestMatchers("/movies/*").authenticated()
+                .requestMatchers("/movies").authenticated()
                 .anyRequest().authenticated()
             )
             .userDetailsService(authorizationService)  //  <-- OBRIGATÓRIO

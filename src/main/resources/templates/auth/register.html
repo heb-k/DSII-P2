@@ -7,10 +7,10 @@
     <h1>Página de Cadastro</h1>
       <form action="/auth/register" method="post" th:object="${user}">
           <label>user:</label>
-          <input type="text" th:field="*{login}" />
+          <input type="text" th:field="*{login}" required />
           <br/>
           <label>Senha:</label>
-          <input type="password" th:field="*{password}" />
+          <input type="password" th:field="*{password}" required />
           <input type="option" value="user" th:field="*{role}" hidden/>
           <br/>
           <button type="submit">Cadastrar</button>

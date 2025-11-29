@@ -11,6 +11,7 @@ import com.moviez.DSII_P2.model.user.User;
 @Getter
 @Setter
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"movie_id", "user_id"}))
 public class Review {
 
     @Id
@@ -29,5 +30,12 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+    }
 
 }
