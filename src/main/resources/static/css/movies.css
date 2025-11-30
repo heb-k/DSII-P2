@@ -737,10 +737,16 @@ h2 {
     .review-card-grid {
         flex-direction: column;
         padding: 12px;
+        align-items: center;
+        text-align: center;
     }
     
     .review-card-grid h3 {
         font-size: 1rem;
+    }
+    
+    .review-content {
+        align-items: center;
     }
 }
 

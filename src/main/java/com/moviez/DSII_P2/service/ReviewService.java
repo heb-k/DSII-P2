@@ -104,12 +104,24 @@ public class ReviewService {
         Review review = reviewRepo.findById(reviewId).orElseThrow(() -> 
             new RuntimeException("Review não encontrada"));
         
-        // Verify ownership
+        // Verify ownership or admin role
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             String username = authentication.getName();
             User user = userRepo.findByLogin(username);
-            if (user != null && review.getUser().getId().equals(user.getId())) {
+            
+            // Check if user is admin
+            boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+            
+            // Allow deletion if user is admin (even if review has no owner)
+            if (isAdmin) {
+                reviewRepo.delete(review);
+                return;
+            }
+
+            // Otherwise, allow deletion only if the authenticated user owns the review
+            if (user != null && review.getUser() != null && review.getUser().getId().equals(user.getId())) {
                 reviewRepo.delete(review);
                 return;
             }

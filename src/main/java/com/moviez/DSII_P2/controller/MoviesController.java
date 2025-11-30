@@ -100,6 +100,14 @@ public class MoviesController {
         }
         model.addAttribute("alreadyReviewed", alreadyReviewed);
         model.addAttribute("currentUserId", currentUserId);
+        
+        // Check if user is admin
+        boolean isAdmin = false;
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
+            isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        }
+        model.addAttribute("isAdmin", isAdmin);
 
         return "movies/detail";
     }

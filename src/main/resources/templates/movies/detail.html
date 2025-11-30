@@ -132,6 +132,16 @@
                     <input type="hidden" name="movieId" th:value="${filme.id}">
                 </form>
             </div>
+            <!-- Admin delete button (visible only for admins) -->
+            <div class="review-actions admin-actions" th:if="${isAdmin != null && isAdmin && (currentUserId == null || r.user == null || currentUserId != r.user.id)}">
+                <button class="delete-btn admin-delete-btn" th:onclick="'deleteReview(' + ${r.id} + ')'">🛡️ Deletar (Admin)</button>
+                <form th:id="'delete-form-' + ${r.id}" 
+                      th:action="@{/reviews/delete/{id}(id=${r.id})}" 
+                      method="post" 
+                      style="display: none;">
+                    <input type="hidden" name="movieId" th:value="${filme.id}">
+                </form>
+            </div>
         </div>
         <div class="review-author" th:if="${r.user != null}">
             Por: 

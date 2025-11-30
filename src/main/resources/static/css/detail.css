@@ -3,12 +3,14 @@ body {
     font-family: "Segoe UI", sans-serif;
     background: #0e0e0e;
     color: #eee;
+    overflow-x: hidden;
 }
 
 .page {
     max-width: 1100px;
     margin: 40px auto;
     padding: 20px;
+    box-sizing: border-box;
 }
 
 /* ----- CARD DO FILME ----- */
@@ -122,6 +124,7 @@ input, textarea {
     color: #eee;
     margin-top: 5px;
     font-size: 1rem;
+    box-sizing: border-box;
 }
 
 /* Star Rating */
@@ -186,6 +189,10 @@ form button:hover {
     border-radius: 12px;
     margin-top: 20px;
     border-left: 4px solid #ffcc00;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    box-sizing: border-box;
+    max-width: 100%;
 }
 
 .review-rating {
@@ -233,6 +240,8 @@ form button:hover {
     color: #ddd;
     margin-top: 5px;
     line-height: 1.5;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 /* Review Header with Actions */
@@ -273,6 +282,27 @@ form button:hover {
 .delete-btn:hover {
     border-color: #ff4444;
     color: #ff4444;
+}
+
+/* Admin delete button styling */
+.admin-actions {
+    margin-top: 8px;
+}
+
+.admin-delete-btn {
+    background: linear-gradient(135deg, #8b0000 0%, #ff4444 100%);
+    border: 2px solid #ff6666;
+    color: #fff;
+    font-weight: bold;
+    padding: 6px 14px;
+    box-shadow: 0 2px 8px rgba(255, 68, 68, 0.3);
+}
+
+.admin-delete-btn:hover {
+    background: linear-gradient(135deg, #a00000 0%, #ff5555 100%);
+    border-color: #ff8888;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 68, 68, 0.5);
 }
 
 .save-btn {
@@ -410,6 +440,11 @@ form button:hover {
 }
 
 @media (max-width: 480px) {
+    .page {
+        padding: 15px;
+        margin: 20px auto;
+    }
+    
     .movie-poster {
         max-width: 250px;
     }
@@ -442,5 +477,9 @@ form button:hover {
     a.back-btn {
         display: block;
         text-align: center;
+    }
+    
+    .review-card {
+        padding: 15px;
     }
 }
