@@ -2,29 +2,52 @@
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Filmes</title>
+    <title>Moviez</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preload" href="/img/logo.webp" as="image">
     <link rel="stylesheet" th:href="@{/css/movies.css}">
 </head>
 <body th:attr="data-needs-username=${needsUsername}">
 
+    <div class="navbar-overlay"></div>
     <div class="header-container">
-        <a href="/logout" class="logout">Sair</a>
-        <a th:if="${currentUsername != null}" th:href="@{/users/{username}(username=${currentUsername})}" 
-           style="color: #ffcc00; text-decoration: none; float: right; margin-right: 15px; font-weight: bold;">
-            👤 Meu Perfil
-        </a>
-        <h1>Moviez App</h1>
-        <form action="/movies" method="get">
-            <input type="text" name="nome" placeholder="Buscar filme..." th:value="${param.nome}">
-            <button type="submit">Buscar</button>
-            <a th:if="${searching}" href="/movies" style="color: #ccc; margin-left: 10px; text-decoration: underline;">Limpar busca</a>
-        </form>
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <img src="/img/logo.webp" alt="Moviez" class="logo" loading="eager" decoding="async" fetchpriority="high">
+            </div>
+            
+            <div class="navbar-search">
+                <form action="/movies" method="get">
+                    <div class="search-wrapper">
+                        <input type="text" name="nome" placeholder="Buscar filme..." th:value="${param.nome}">
+                        <button type="submit" class="search-btn" title="Buscar">🔍</button>
+                    </div>
+                </form>
+                <a th:if="${searching}" href="/movies" class="clear-search">✕ Limpar</a>
+            </div>
+            
+            <button class="hamburger" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <div class="navbar-menu">
+                <a href="/profile" class="profile-link">👤 Perfil</a>
+                <a href="/logout" class="logout">🚪 Sair</a>
+            </div>
+            
+            <div class="navbar-actions">
+                <a href="/profile" class="profile-link">👤 Perfil</a>
+                <a href="/logout" class="logout">🚪 Sair</a>
+            </div>
+        </nav>
     </div>
 
     <!-- Tabs Navigation -->
     <div class="tabs-container" th:unless="${searching}">
-        <button class="tab-btn active" onclick="switchTab('movies')">🎬 Filmes</button>
-        <button class="tab-btn" onclick="switchTab('reviews')">💬 Reviews Recentes</button>
+        <button class="tab-btn" th:classappend="${param.tab == null or param.tab[0] == 'movies' ? 'active' : ''}" onclick="switchTab('movies')">🎬 Filmes</button>
+        <button class="tab-btn" th:classappend="${param.tab != null and param.tab[0] == 'reviews' ? 'active' : ''}" onclick="switchTab('reviews')">💬 Reviews Recentes</button>
     </div>
 
     <div th:if="${searching}">
@@ -49,7 +72,7 @@
     </div>
 
     <!-- Movies Tab Content -->
-    <div class="tab-content active" id="movies-tab" th:unless="${searching}">
+    <div class="tab-content" th:classappend="${param.tab == null or param.tab[0] == 'movies' ? 'active' : ''}" id="movies-tab" th:unless="${searching}">
         
         <h2>🔥 Populares</h2>
         <div class="scroll-container">
@@ -57,7 +80,7 @@
     
     <a th:href="@{/movies/{id}(id=${filme.id})}">
         <img th:if="${filme.posterPath != null}" 
-             th:src="'https://image.tmdb.org/t/p/w185' + ${filme.posterPath}" 
+             th:src="'https://image.tmdb.org/t/p/w342' + ${filme.posterPath}" 
              alt="Poster">
     </a>
 
@@ -90,7 +113,7 @@
                 <img th:if="${filme.posterPath != null}" th:src="'https://image.tmdb.org/t/p/w342' + ${filme.posterPath}" alt="Poster">
                 </a>
                 <div class="card-content">
-                    <a th:href="@{/movies/{id}(id=${filme.id})}">
+                    <a th:href="@{/movies/{id}(id=${filme.id})}" style="text-decoration: none; color: inherit;">
                     <h3 th:text="${filme.title}" th:title="${filme.title}"></h3>
                     </a>
                 </div>
@@ -100,7 +123,7 @@
     </div>
 
     <!-- Reviews Tab Content -->
-    <div class="tab-content" id="reviews-tab" th:unless="${searching}">
+    <div class="tab-content" th:classappend="${param.tab != null and param.tab[0] == 'reviews' ? 'active' : ''}" id="reviews-tab" th:unless="${searching}">
         <h2>💬 Reviews Recentes</h2>
         <div class="reviews-grid">
             <div th:each="review : ${recentReviews}" class="review-card-grid">

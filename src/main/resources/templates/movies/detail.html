@@ -3,12 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${filme.title}">Detalhes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/detail.css}">
 </head>
 
 <body>
-<div class="page">
+<div class="navbar-overlay"></div>
+<div class="header-container">
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <a href="/movies">
+                <img src="/img/logo.webp" alt="Moviez" class="logo">
+            </a>
+        </div>
+        
+        <button class="hamburger" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        
+        <div class="navbar-menu">
+            <a href="/movies?tab=movies">🎬 Filmes</a>
+            <a href="/movies?tab=reviews">💬 Reviews</a>
+            <a href="/profile">👤 Perfil</a>
+            <a href="/logout" class="logout">🚪 Sair</a>
+        </div>
+        
+        <div class="navbar-actions">
+            <a href="/movies?tab=movies">🎬 Filmes</a>
+            <a href="/movies?tab=reviews">💬 Reviews</a>
+            <a href="/profile" class="profile-link">👤 Perfil</a>
+            <a href="/logout" class="logout">🚪 Sair</a>
+        </div>
+    </nav>
+</div>
+<script th:src="@{/js/navbar.js}"></script>
 
+<div class="page">
+    <a th:href="@{/movies}" class="back-btn">⬅ Voltar</a>
     <!-- CARD DO FILME -->
     <div class="movie-card">
         <div class="movie-poster">
@@ -35,7 +69,6 @@
             <div class="overview-title">Sinopse</div>
             <p class="overview" th:text="${filme.overview}">Descrição...</p>
 
-            <a href="/movies" class="back-btn">⬅ Voltar</a>
         </div>
     </div>
 

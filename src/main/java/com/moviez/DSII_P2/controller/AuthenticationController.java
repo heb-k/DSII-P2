@@ -64,7 +64,7 @@ public class AuthenticationController {
     }
 
         String encrypted = new BCryptPasswordEncoder().encode(data.password());
-        User user = new User(data.login(), encrypted, data.role());
+        User user = new User(data.login(), encrypted, com.moviez.DSII_P2.model.user.UserRole.USER);
         
         // Salva o usuário no banco de dados
         User savedUser = userRepository.save(user);

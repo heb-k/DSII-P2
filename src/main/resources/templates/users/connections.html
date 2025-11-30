@@ -3,9 +3,43 @@
 <head>
     <meta charset="UTF-8" />
     <title th:text="${profileUser.usernameField != null && !profileUser.usernameField.isEmpty() ? profileUser.usernameField + ' - Conexões' : profileUser.login + ' - Conexões'}">Conexões</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/connections.css}">
 </head>
 <body>
+<div class="navbar-overlay"></div>
+<div class="header-container">
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <a href="/movies">
+                <img src="/img/logo.webp" alt="Moviez" class="logo">
+            </a>
+        </div>
+        
+        <button class="hamburger" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        
+        <div class="navbar-menu">
+            <a href="/movies?tab=movies">🎬 Filmes</a>
+            <a href="/movies?tab=reviews">💬 Reviews</a>
+            <a href="/profile" class="active">👤 Perfil</a>
+            <a href="/logout" class="logout">🚪 Sair</a>
+        </div>
+        
+        <div class="navbar-actions">
+            <a href="/movies?tab=movies">🎬 Filmes</a>
+            <a href="/movies?tab=reviews">💬 Reviews</a>
+            <a href="/profile" class="profile-link active">👤 Perfil</a>
+            <a href="/logout" class="logout">🚪 Sair</a>
+        </div>
+    </nav>
+</div>
+    <script th:src="@{/js/navbar.js}"></script>
+
 <div class="container">
     <a th:href="@{/users/{username}(username=${profileUser.usernameField})}" class="back">⬅ Voltar ao Perfil</a>
     

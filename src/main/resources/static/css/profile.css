@@ -171,3 +171,70 @@ a.back {
 a.back:hover { 
     text-decoration:underline; 
 }
+
+/* Responsividade para mobile */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .avatar {
+        width: 90px;
+        height: 90px;
+        font-size: 2rem;
+    }
+    
+    .counts {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .follow-actions form {
+        width: 100%;
+    }
+    
+    .follow-btn, .unfollow-btn {
+        width: 100%;
+        padding: 10px;
+    }
+    
+    .review-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .review-item {
+        padding: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    .avatar {
+        width: 70px;
+        height: 70px;
+        font-size: 1.5rem;
+    }
+    
+    .counts {
+        gap: 10px;
+    }
+    
+    .counts div {
+        font-size: 0.9rem;
+    }
+}

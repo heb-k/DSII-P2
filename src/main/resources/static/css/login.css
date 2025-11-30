@@ -1,0 +1,15 @@
+/* Estilos para página de login */
+.container-login {
+  max-width: 400px;
+  margin: 60px auto 0 auto;
+  background: rgba(34,34,34,0.97);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+  padding: 36px 28px;
+  color: #eee;
+}
+.container-login h1 { color: #ffcc00; font-size: 2rem; margin-bottom: 22px; text-align:center; }
+.container-login label { display:block; margin-bottom:8px; color:#ccc; font-weight:500; }
+.container-login input { width:100%; padding:10px; border-radius:7px; border:1px solid #444; background:#222; color:#eee; margin-bottom:18px; font-size:1rem; }
+.container-login button { width:100%; background:#ffcc00; color:#232526; border:none; border-radius:7px; padding:12px 0; font-size:1.1rem; font-weight:bold; cursor:pointer; transition:background 0.2s, color 0.2s; }
+.container-login button:hover { background:#232526; color:#ffcc00; border:1px solid #ffcc00; }
