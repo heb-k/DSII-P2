@@ -26,7 +26,8 @@ body {
 
 .movie-poster img {
     width: 100%;
-    height: 100%;
+    height: auto;
+    aspect-ratio: 2/3;
     object-fit: cover;
     display: block;
 }
@@ -77,7 +78,8 @@ h1 {
 
 a.back-btn {
     display: inline-block;
-    margin-top: 40px;
+    margin-top: 0px;
+    margin-bottom: 25px;
     padding: 12px 25px;
     background: #ffcc00;
     color: #000;
@@ -339,4 +341,106 @@ form button:hover {
 
 .star-rating-edit .star-clickable.empty {
     color: #333;
+}
+
+/* Responsividade para mobile */
+@media (max-width: 768px) {
+    .page {
+        margin: 20px auto;
+        padding: 10px;
+    }
+    
+    .movie-card {
+        flex-direction: column;
+    }
+    
+    .movie-poster {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+    
+    .movie-poster img {
+        aspect-ratio: 2/3;
+    }
+    
+    .movie-info {
+        width: 100%;
+        padding: 20px;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    .metadata {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .tag {
+        font-size: 0.85rem;
+        padding: 5px 10px;
+    }
+    
+    .overview-title {
+        font-size: 1.1rem;
+    }
+    
+    a.back-btn {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+    
+    form {
+        padding: 15px;
+    }
+    
+    .star-clickable {
+        font-size: 2rem;
+    }
+    
+    .star-rating-edit .star-clickable {
+        font-size: 1.5rem;
+    }
+    
+    .review-card {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .movie-poster {
+        max-width: 250px;
+    }
+    
+    .movie-poster img {
+        aspect-ratio: 2/3;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    h2 {
+        font-size: 1.3rem;
+    }
+    
+    .movie-info {
+        padding: 15px;
+    }
+    
+    .star-clickable {
+        font-size: 1.8rem;
+    }
+    
+    form button {
+        width: 100%;
+        padding: 12px;
+    }
+    
+    a.back-btn {
+        display: block;
+        text-align: center;
+    }
 }

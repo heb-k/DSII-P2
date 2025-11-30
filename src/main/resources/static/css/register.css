@@ -1,0 +1,20 @@
+/* Estilos para página de cadastro */
+.container-register {
+  max-width: 400px;
+  margin: 60px auto 0 auto;
+  background: rgba(34,34,34,0.97);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+  padding: 36px 28px;
+  color: #eee;
+}
+.container-register h1 { color: #ffcc00; font-size: 2rem; margin-bottom: 22px; text-align:center; }
+.container-register label { display:block; margin-bottom:8px; color:#ccc; font-weight:500; }
+.container-register input { width:100%; padding:10px; border-radius:7px; border:1px solid #444; background:#222; color:#eee; margin-bottom:18px; font-size:1rem; }
+.container-register button { width:100%; background:#ffcc00; color:#232526; border:none; border-radius:7px; padding:12px 0; font-size:1.1rem; font-weight:bold; cursor:pointer; transition:background 0.2s, color 0.2s; }
+.container-register button:hover { background:#232526; color:#ffcc00; border:1px solid #ffcc00; }
+@media (max-width: 600px) {
+  .container-register { padding: 18px 4px; margin: 20px 2px; }
+  .container-register h1 { font-size: 1.3rem; }
+  .container-register button { font-size: 1rem; padding: 10px 0; }
+}

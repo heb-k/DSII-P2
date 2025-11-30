@@ -72,6 +72,20 @@ public class FollowController {
         return u == null ? 0 : followService.countFollowing(u);
     }
 
+    // Redirect to authenticated user's profile
+    @GetMapping("/profile")
+    public String myProfile() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getName())) {
+            return "redirect:/auth/login";
+        }
+        User me = userRepository.findByLogin(auth.getName());
+        if (me == null || me.getUsernameField() == null || me.getUsernameField().isEmpty()) {
+            return "redirect:/movies";
+        }
+        return "redirect:/users/" + me.getUsernameField();
+    }
+
     // Profile page
     @GetMapping("/users/{username}")
     public String userProfile(@PathVariable String username, Model model) {
