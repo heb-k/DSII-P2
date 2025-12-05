@@ -54,7 +54,7 @@ public class SecurityConfigurations {
                 .loginProcessingUrl("/login")
                 .usernameParameter("username")
                 .passwordParameter("password")
-                .defaultSuccessUrl("/auth/auto-login", true)
+                .defaultSuccessUrl("/movies", true)
                 .failureUrl("/auth/login?error=true")
                 .permitAll()
             )
