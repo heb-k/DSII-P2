@@ -81,7 +81,7 @@ public class AuthenticationController {
 
             // Redireciona para a página principal de filmes
             if (savedUser != null && savedUser.getId() != null) {
-                return "/auth/auto-login";
+                return "auth/auto-login";
             } else {
                 model.addAttribute("error", "Erro ao salvar usuário");
                 return "auth/register";
