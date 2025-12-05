@@ -15,6 +15,12 @@
 <body>
     <div class="container-login">
         <h1>Login</h1>
+        
+        <!-- Exibir erro se houver -->
+        <div th:if="${param.error}" class="error-message">
+            <p>❌ Usuário ou senha incorretos. Tente novamente.</p>
+        </div>
+        
         <form action="/login" method="POST">
             <label for="username">Usuário</label>
             <input type="email" id="username" name="username" required />

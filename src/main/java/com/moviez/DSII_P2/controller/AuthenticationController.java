@@ -11,10 +11,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +23,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.moviez.DSII_P2.model.user.RegisterDTO;
 import com.moviez.DSII_P2.model.user.User;
 import com.moviez.DSII_P2.repository.UserRepository;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 
 
@@ -57,11 +58,8 @@ public class AuthenticationController {
     public String register(RegisterDTO data, Model model, HttpServletRequest request, HttpServletResponse response) {
 
         if (userRepository.findByLogin(data.login()) != null) {
-        model.addAttribute("error", "Usuário já existe");
-        // CORREÇÃO: Adicione o objeto 'user' de volta ao Model
-        model.addAttribute("user", data); 
-        return "redirect:/auth/register?usuariojaexiste=true";
-    }
+            return "redirect:/auth/register?usuariojaexiste=true";
+        }
 
         String encrypted = new BCryptPasswordEncoder().encode(data.password());
         User user = new User(data.login(), encrypted, com.moviez.DSII_P2.model.user.UserRole.USER);
@@ -108,21 +106,24 @@ public class AuthenticationController {
     @PostMapping("/set-username")
     public String setUsername(@RequestParam String username, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.isAuthenticated()) {
-            String login = auth.getName();
-            User user = userRepository.findByLogin(login);
-            
-            if (user != null) {
-                // Verificar se username já existe
-                if (userRepository.existsByUsername(username)) {
-                    model.addAttribute("error", "Username já está em uso");
-                    return "redirect:/movies?username_error=true";
-                }
-                
-                user.setUsername(username);
-                userRepository.save(user);
-            }
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getName())) {
+            return "redirect:/auth/login";
         }
+        
+        String login = auth.getName();
+        User user = userRepository.findByLogin(login);
+        
+        if (user != null) {
+            // Verificar se username já existe
+            if (userRepository.existsByUsername(username)) {
+                model.addAttribute("error", "Username já está em uso");
+                return "redirect:/movies?username_error=true";
+            }
+            
+            user.setUsername(username);
+            userRepository.save(user);
+        }
+        
         return "redirect:/movies";
     }
 }

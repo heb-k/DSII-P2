@@ -1,0 +1,130 @@
+/* Estilos para página de erro */
+.error-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #232526 0%, #414345 100%);
+}
+
+.error-content {
+    max-width: 600px;
+    width: 100%;
+    background: rgba(34, 34, 34, 0.97);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    padding: 48px 36px;
+    text-align: center;
+    color: #eee;
+}
+
+.error-icon {
+    font-size: 5rem;
+    margin-bottom: 24px;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-15px);
+    }
+    60% {
+        transform: translateY(-8px);
+    }
+}
+
+.error-title {
+    color: #ffcc00;
+    font-size: 2.2rem;
+    margin-bottom: 16px;
+    font-weight: 700;
+}
+
+.error-description {
+    color: #ccc;
+    font-size: 1.1rem;
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+.error-code {
+    display: inline-block;
+    background: rgba(255, 204, 0, 0.1);
+    border: 1px solid rgba(255, 204, 0, 0.3);
+    border-radius: 8px;
+    padding: 8px 16px;
+    margin-bottom: 32px;
+    color: #ffcc00;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.error-code span {
+    font-weight: 700;
+    color: #ffcc00;
+}
+
+.error-actions {
+    margin-bottom: 24px;
+}
+
+.btn-home {
+    display: inline-block;
+    background: #ffcc00;
+    color: #232526;
+    text-decoration: none;
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255, 204, 0, 0.3);
+}
+
+.btn-home:hover {
+    background: #232526;
+    color: #ffcc00;
+    border: 2px solid #ffcc00;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 204, 0, 0.4);
+}
+
+.error-message {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.error-message p {
+    color: #999;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .error-content {
+        padding: 32px 24px;
+    }
+
+    .error-icon {
+        font-size: 4rem;
+    }
+
+    .error-title {
+        font-size: 1.6rem;
+    }
+
+    .error-description {
+        font-size: 1rem;
+    }
+
+    .btn-home {
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+}

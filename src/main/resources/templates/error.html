@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erro - Moviez</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/error.css">
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-content">
+            <div class="error-icon">😔</div>
+            
+            <h1 class="error-title" th:text="${errorMessage}">Ops! Algo deu errado</h1>
+            
+            <p class="error-description" th:text="${errorDescription}">
+                Pedimos desculpas pelo inconveniente.
+            </p>
+            
+            <div class="error-code" th:if="${statusCode}">
+                Código do erro: <span th:text="${statusCode}">500</span>
+            </div>
+            
+            <div class="error-actions">
+                <a href="/movies" class="btn-home">
+                    🏠 Voltar para a Página Inicial
+                </a>
+            </div>
+            
+            <div class="error-message">
+                <p>Se o problema persistir, entre em contato conosco.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

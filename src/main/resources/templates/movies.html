@@ -55,10 +55,10 @@
         <div class="grid-container">
             
             <div th:each="filme : ${searchResults}" class="card">
-                <a th:href="@{/movies/{id}(id=${filme.id})}">
+                <a th:href="@{/movies/{id}(id=${filme.id})}" style="text-decoration: none; color: inherit;">
                 <img th:if="${filme.posterPath != null}" th:src="'https://image.tmdb.org/t/p/w342' + ${filme.posterPath}" alt="Poster">
                 
-                <img th:unless="${filme.posterPath != null}" src="https://via.placeholder.com/500x750?text=Sem+Imagem" alt="Sem Imagem">
+                <img th:unless="${filme.posterPath != null}" src="/img/placeholder.webp" alt="Sem Imagem">
                 
                 <div class="card-content">
                     <h3 th:text="${filme.title}"></h3>
@@ -133,7 +133,7 @@
                              th:src="'https://image.tmdb.org/t/p/w185' + ${review.movie.posterPath}" 
                              alt="Poster" class="review-poster">
                         <img th:unless="${review.movie.posterPath != null}" 
-                             src="https://via.placeholder.com/185x278?text=Sem+Imagem" 
+                             src="/img/placeholder.webp" 
                              alt="Sem Imagem" class="review-poster">
                     </a>
                     <div>

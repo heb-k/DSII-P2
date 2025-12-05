@@ -49,7 +49,7 @@
             <img th:if="${filme.posterPath != null}"
                  th:src="'https://image.tmdb.org/t/p/w500' + ${filme.posterPath}">
             <img th:unless="${filme.posterPath != null}"
-                 src="https://via.placeholder.com/500x750?text=Sem+Imagem">
+                 src="/img/placeholder.webp" alt="Sem Imagem">
         </div>
 
         <div class="movie-info">
