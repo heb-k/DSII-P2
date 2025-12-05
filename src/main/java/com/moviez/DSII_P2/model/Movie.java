@@ -3,7 +3,6 @@ package com.moviez.DSII_P2.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +15,7 @@ public class Movie {
 
     private String title;
     
-    @Lob
+    //@Lob
     @Column(columnDefinition = "TEXT")
     private String overview;
 
