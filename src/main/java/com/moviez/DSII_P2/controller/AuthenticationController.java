@@ -55,7 +55,13 @@ public class AuthenticationController {
     
 
     @PostMapping("/register")
-    public String register(RegisterDTO data, Model model, HttpServletRequest request, HttpServletResponse response) {
+    public String register(@jakarta.validation.Valid RegisterDTO data, org.springframework.validation.BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) {
+        if (result.hasErrors()) {
+            model.addAttribute("error", result.getAllErrors().get(0).getDefaultMessage());
+            model.addAttribute("user", data);
+            return "auth/register";
+        }
+
 
         if (userRepository.findByLogin(data.login()) != null) {
             return "redirect:/auth/register?usuariojaexiste=true";
