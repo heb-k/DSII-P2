@@ -9,177 +9,190 @@
 </head>
 
 <body>
-<div class="navbar-overlay"></div>
-<div class="header-container">
-    <nav class="navbar">
-        <div class="navbar-brand">
-            <a href="/movies">
-                <img src="/img/logo.webp" alt="Moviez" class="logo">
-            </a>
-        </div>
-        
-        <button class="hamburger" aria-label="Menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        
-        <div class="navbar-menu">
-            <a href="/movies?tab=movies">🎬 Filmes</a>
-            <a href="/movies?tab=reviews">💬 Reviews</a>
-            <a href="/profile">👤 Perfil</a>
-            <a href="/logout" class="logout">🚪 Sair</a>
-        </div>
-        
-        <div class="navbar-actions">
-            <a href="/movies?tab=movies">🎬 Filmes</a>
-            <a href="/movies?tab=reviews">💬 Reviews</a>
-            <a href="/profile" class="profile-link">👤 Perfil</a>
-            <a href="/logout" class="logout">🚪 Sair</a>
-        </div>
-    </nav>
-</div>
-<script th:src="@{/js/navbar.js}"></script>
-
-<div class="page">
-    <a th:href="@{/movies}" class="back-btn">⬅ Voltar</a>
-    <!-- CARD DO FILME -->
-    <div class="movie-card">
-        <div class="movie-poster">
-            <img th:if="${filme.posterPath != null}"
-                 th:src="'https://image.tmdb.org/t/p/w500' + ${filme.posterPath}">
-            <img th:unless="${filme.posterPath != null}"
-                 src="/img/placeholder.webp" alt="Sem Imagem">
-        </div>
-
-        <div class="movie-info">
-            <h1 th:text="${filme.title}">Título do Filme</h1>
-
-            <div class="metadata">
-                <span class="tag">📅 <span th:text="${filme.releaseDate}"></span></span>
-                <!-- Map TMDB rating (0-100 or 0-10) to 0-5 stars and round to nearest 0.5 for consistent half-star display -->
-                <span class="tag" th:with="avg=${filme.voteAverage}, stars=${avg > 10 ? (avg/20.0) : (avg/2.0)}, starsRounded=${T(java.lang.Math).round(stars*2)/2.0}">
-                    <span th:each="i : ${#numbers.sequence(1,5)}"
-                          th:classappend="${starsRounded >= i} ? 'star-filled' : (${starsRounded >= i - 0.5} ? 'star-half' : 'star-empty')"
-                          class="review-star">★</span>
-                    <span class="rating-text" th:text="${avg > 10 ? '(' + avg + '/100)' : '(' + avg + '/10)'}"></span>
-                </span>
+    <div class="navbar-overlay"></div>
+    <div class="header-container">
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <a href="/movies">
+                    <img src="/img/logo.webp" alt="Moviez" class="logo">
+                </a>
             </div>
 
-            <div class="overview-title">Sinopse</div>
-            <p class="overview" th:text="${filme.overview}">Descrição...</p>
+            <button class="hamburger" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
 
+            <div class="navbar-menu">
+                <a href="/movies?tab=movies">🎬 Filmes</a>
+                <a href="/movies?tab=reviews">💬 Reviews</a>
+                <a th:if="${isLoggedIn}" href="/profile" class="profile-link">👤 Perfil</a>
+                <form th:if="${isLoggedIn}" th:action="@{/logout}" method="post" style="display: inline;">
+                    <button type="submit" class="logout-btn">🚪 Sair</button>
+                </form>
+                <a th:if="${!isLoggedIn}" href="/auth/login" class="login-link">Entrar</a>
+            </div>
+
+            <div class="navbar-actions">
+                <a href="/movies?tab=movies">🎬 Filmes</a>
+                <a href="/movies?tab=reviews">💬 Reviews</a>
+                <a th:if="${isLoggedIn}" href="/profile" class="profile-link">👤 Perfil</a>
+                <form th:if="${isLoggedIn}" th:action="@{/logout}" method="post" style="display: inline;">
+                    <button type="submit" class="logout-btn">🚪 Sair</button>
+                </form>
+                <a th:if="${!isLoggedIn}" href="/auth/login" class="login-link"
+                    style="padding: 8px 15px; background: #0172B2; border-radius: 8px; color: white; text-decoration: none;">Entrar</a>
+            </div>
+        </nav>
+    </div>
+    <script th:src="@{/js/navbar.js}"></script>
+
+    <div class="page">
+        <a th:href="@{/movies}" class="back-btn">⬅ Voltar</a>
+        <!-- CARD DO FILME -->
+        <div class="movie-card">
+            <div class="movie-poster">
+                <img th:if="${filme.posterPath != null}"
+                    th:src="'https://image.tmdb.org/t/p/w500' + ${filme.posterPath}">
+                <img th:unless="${filme.posterPath != null}" src="/img/placeholder.webp" alt="Sem Imagem">
+            </div>
+
+            <div class="movie-info">
+                <h1 th:text="${filme.title}">Título do Filme</h1>
+
+                <div class="metadata">
+                    <span class="tag">📅 <span th:text="${filme.releaseDate}"></span></span>
+                    <!-- Map TMDB rating (0-100 or 0-10) to 0-5 stars and round to nearest 0.5 for consistent half-star display -->
+                    <span class="tag"
+                        th:with="avg=${filme.voteAverage}, stars=${avg > 10 ? (avg/20.0) : (avg/2.0)}, starsRounded=${T(java.lang.Math).round(stars*2)/2.0}">
+                        <span th:each="i : ${#numbers.sequence(1,5)}"
+                            th:classappend="${starsRounded >= i} ? 'star-filled' : (${starsRounded >= i - 0.5} ? 'star-half' : 'star-empty')"
+                            class="review-star">★</span>
+                        <span class="rating-text"
+                            th:text="${avg > 10 ? '(' + avg + '/100)' : '(' + avg + '/10)'}"></span>
+                    </span>
+                </div>
+
+                <div class="overview-title">Sinopse</div>
+                <p class="overview" th:text="${filme.overview}">Descrição...</p>
+
+            </div>
         </div>
-    </div>
 
 
-    <!-- FORM REVIEW -->
-    <h2>Enviar Review</h2>
+        <!-- FORM REVIEW -->
+        <h2 th:if="${isLoggedIn}">Enviar Review</h2>
+        <h2 th:if="${!isLoggedIn}">Avaliações</h2>
 
-    <div th:if="${alreadyReviewed}">
-        <p style="color:#ccc; background:#1a1a1a; padding:12px 16px; border-radius:10px; border-left:4px solid #ffcc00;">
-            Você já enviou uma review para este filme.
-        </p>
-    </div>
+        <div th:if="${isLoggedIn && alreadyReviewed}">
+            <p
+                style="color:#ccc; background:#1a1a1a; padding:12px 16px; border-radius:10px; border-left:4px solid #ffcc00;">
+                Você já enviou uma review para este filme.
+            </p>
+        </div>
 
-    <form th:if="${!alreadyReviewed}" th:action="@{/reviews/create/{id}(id=${filme.id})}" method="post" id="reviewForm">
+        <div th:if="${!isLoggedIn}">
+            <p
+                style="color:#ccc; background:#1a1a1a; padding:12px 16px; border-radius:10px; border-left:4px solid #0172B2; margin-bottom: 20px;">
+                Faça <a href="/auth/login" style="color:#0172B2; text-decoration: underline;">Login</a> ou <a
+                    href="/auth/register" style="color:#0172B2; text-decoration: underline;">Cadastre-se</a> para
+                avaliar este filme.
+            </p>
+        </div>
+
+        <form th:if="${isLoggedIn && !alreadyReviewed}" th:action="@{/reviews/create/{id}(id=${filme.id})}"
+            method="post" id="reviewForm">
             <label>Avaliação (Clique nas estrelas) <span style="color: #ff4444;">*</span></label>
-        <div class="star-rating" id="starRating">
+            <div class="star-rating" id="starRating">
                 <input type="hidden" name="rating" id="ratingInput" />
-            <span class="star-clickable" data-value="1">★</span>
-            <span class="star-clickable" data-value="2">★</span>
-            <span class="star-clickable" data-value="3">★</span>
-            <span class="star-clickable" data-value="4">★</span>
-            <span class="star-clickable" data-value="5">★</span>
-        </div>
+                <span class="star-clickable" data-value="1">★</span>
+                <span class="star-clickable" data-value="2">★</span>
+                <span class="star-clickable" data-value="3">★</span>
+                <span class="star-clickable" data-value="4">★</span>
+                <span class="star-clickable" data-value="5">★</span>
+            </div>
             <span id="ratingError" style="color: #ff4444; font-size: 0.9rem; display: none;">Por favor, selecione uma avaliação</span>
 
-        <label>Comentário</label>
-        <textarea name="comment" required></textarea>
+            <label>Comentário</label>
+            <textarea name="comment" required></textarea>
 
-        <button type="submit">Enviar Review</button>
-    </form>
+            <button type="submit">Enviar Review</button>
+        </form>
 
 
-    <!-- LISTA DE REVIEWS -->
-    <h2>Reviews</h2>
+        <!-- LISTA DE REVIEWS -->
+        <h2>Reviews</h2>
 
-    <div th:if="${#lists.isEmpty(reviews)}">
-        <p>Não há reviews para este filme.</p>
-    </div>
+        <div th:if="${#lists.isEmpty(reviews)}">
+            <p>Não há reviews para este filme.</p>
+        </div>
 
-    <div th:each="r : ${reviews}" class="review-card" th:attr="data-review-id=${r.id}">
-        <div class="review-header">
-            <div class="review-rating">
-                <span th:with="stars=${r.rating}">
-                    <span th:each="i : ${#numbers.sequence(1,5)}"
-                          th:classappend="${stars >= i} ? 'star-filled' : (${stars >= i - 0.5} ? 'star-half' : 'star-empty')"
-                          class="review-star">★</span>
-                </span>
-                <span class="rating-text" th:text="'(' + ${r.rating} + '/5)'"></span>
+        <div th:each="r : ${reviews}" class="review-card" th:attr="data-review-id=${r.id}">
+            <div class="review-header">
+                <div class="review-rating">
+                    <span th:with="stars=${r.rating}">
+                        <span th:each="i : ${#numbers.sequence(1,5)}"
+                            th:classappend="${stars >= i} ? 'star-filled' : (${stars >= i - 0.5} ? 'star-half' : 'star-empty')"
+                            class="review-star">★</span>
+                    </span>
+                    <span class="rating-text" th:text="'(' + ${r.rating} + '/5)'"></span>
+                </div>
+                <div class="review-actions" th:if="${currentUserId != null && r.user != null && currentUserId == r.user.id}">
+                    <button class="edit-btn" th:data-review-id="${r.id}" th:data-comment="${r.comment}"
+                        th:data-rating="${r.rating}" th:onclick="'editReview(' + ${r.id} + ')'">✏️ Editar</button>
+                    <button class="delete-btn" th:onclick="'deleteReview(' + ${r.id} + ')'">🗑️ Excluir</button>
+                    <form th:id="'delete-form-' + ${r.id}" th:action="@{/reviews/delete/{id}(id=${r.id})}" method="post"
+                        style="display: none;">
+                        <input type="hidden" name="movieId" th:value="${filme.id}">
+                    </form>
+                </div>
+                <!-- Admin delete button (visible only for admins) -->
+                <div class="review-actions admin-actions"
+                    th:if="${isAdmin != null && isAdmin && (currentUserId == null || r.user == null || currentUserId != r.user.id)}">
+                    <button class="delete-btn admin-delete-btn" th:onclick="'deleteReview(' + ${r.id} + ')'">🛡️ Deletar
+                        (Admin)</button>
+                    <form th:id="'delete-form-' + ${r.id}" th:action="@{/reviews/delete/{id}(id=${r.id})}" method="post"
+                        style="display: none;">
+                        <input type="hidden" name="movieId" th:value="${filme.id}">
+                    </form>
+                </div>
             </div>
-            <div class="review-actions" th:if="${currentUserId != null && r.user != null && currentUserId == r.user.id}">
-                <button class="edit-btn" 
-                        th:data-review-id="${r.id}"
-                        th:data-comment="${r.comment}"
-                        th:data-rating="${r.rating}"
-                        th:onclick="'editReview(' + ${r.id} + ')'">✏️ Editar</button>
-                <button class="delete-btn" th:onclick="'deleteReview(' + ${r.id} + ')'">🗑️ Excluir</button>
-                <form th:id="'delete-form-' + ${r.id}" 
-                      th:action="@{/reviews/delete/{id}(id=${r.id})}" 
-                      method="post" 
-                      style="display: none;">
+            <div class="review-author" th:if="${r.user != null}">
+                Por:
+                <a th:if="${r.user.usernameField != null && !r.user.usernameField.isEmpty()}"
+                    th:href="@{/users/{username}(username=${r.user.usernameField})}" th:text="${r.user.usernameField}"
+                    style="color: #ffcc00; text-decoration: none; font-weight: bold;"></a>
+                <span th:if="${r.user.usernameField == null || r.user.usernameField.isEmpty()}"
+                    th:text="${r.user.login}" style="color: #aaa;">(sem username)</span>
+            </div>
+            <p class="review-comment" th:text="${r.comment}"></p>
+
+            <!-- Edit Form (hidden by default) -->
+            <div class="review-edit-form" th:id="'edit-form-' + ${r.id}" style="display: none;">
+                <form th:action="@{/reviews/update/{id}(id=${r.id})}" method="post">
                     <input type="hidden" name="movieId" th:value="${filme.id}">
+                    <label>Nova avaliação (estrelas):</label>
+                    <div class="star-rating-edit" th:id="'star-rating-edit-' + ${r.id}">
+                        <input type="hidden" name="rating" th:id="'rating-edit-' + ${r.id}">
+                        <span class="star-clickable empty" data-value="1">★</span>
+                        <span class="star-clickable empty" data-value="2">★</span>
+                        <span class="star-clickable empty" data-value="3">★</span>
+                        <span class="star-clickable empty" data-value="4">★</span>
+                        <span class="star-clickable empty" data-value="5">★</span>
+                    </div>
+                    <label>Novo comentário:</label>
+                    <textarea name="comment" required th:id="'comment-edit-' + ${r.id}"></textarea>
+                    <div style="margin-top: 10px;">
+                        <button type="submit" class="save-btn">💾 Salvar</button>
+                        <button type="button" class="cancel-btn" th:onclick="'cancelEdit(' + ${r.id} + ')'">❌ Cancelar</button>
+                    </div>
                 </form>
             </div>
-            <!-- Admin delete button (visible only for admins) -->
-            <div class="review-actions admin-actions" th:if="${isAdmin != null && isAdmin && (currentUserId == null || r.user == null || currentUserId != r.user.id)}">
-                <button class="delete-btn admin-delete-btn" th:onclick="'deleteReview(' + ${r.id} + ')'">🛡️ Deletar (Admin)</button>
-                <form th:id="'delete-form-' + ${r.id}" 
-                      th:action="@{/reviews/delete/{id}(id=${r.id})}" 
-                      method="post" 
-                      style="display: none;">
-                    <input type="hidden" name="movieId" th:value="${filme.id}">
-                </form>
-            </div>
         </div>
-        <div class="review-author" th:if="${r.user != null}">
-            Por: 
-            <a th:if="${r.user.usernameField != null && !r.user.usernameField.isEmpty()}"
-               th:href="@{/users/{username}(username=${r.user.usernameField})}"
-               th:text="${r.user.usernameField}"
-               style="color: #ffcc00; text-decoration: none; font-weight: bold;"></a>
-            <span th:if="${r.user.usernameField == null || r.user.usernameField.isEmpty()}" 
-                  th:text="${r.user.login}" 
-                  style="color: #aaa;">(sem username)</span>
-        </div>
-        <p class="review-comment" th:text="${r.comment}"></p>
-        
-        <!-- Edit Form (hidden by default) -->
-        <div class="review-edit-form" th:id="'edit-form-' + ${r.id}" style="display: none;">
-            <form th:action="@{/reviews/update/{id}(id=${r.id})}" method="post">
-                <input type="hidden" name="movieId" th:value="${filme.id}">
-                <label>Nova avaliação (estrelas):</label>
-                <div class="star-rating-edit" th:id="'star-rating-edit-' + ${r.id}">
-                    <input type="hidden" name="rating" th:id="'rating-edit-' + ${r.id}">
-                    <span class="star-clickable empty" data-value="1">★</span>
-                    <span class="star-clickable empty" data-value="2">★</span>
-                    <span class="star-clickable empty" data-value="3">★</span>
-                    <span class="star-clickable empty" data-value="4">★</span>
-                    <span class="star-clickable empty" data-value="5">★</span>
-                </div>
-                <label>Novo comentário:</label>
-                <textarea name="comment" required th:id="'comment-edit-' + ${r.id}"></textarea>
-                <div style="margin-top: 10px;">
-                    <button type="submit" class="save-btn">💾 Salvar</button>
-                    <button type="button" class="cancel-btn" th:onclick="'cancelEdit(' + ${r.id} + ')'">❌ Cancelar</button>
-                </div>
-            </form>
-        </div>
+
+        <script th:src="@{/js/detail.js}"></script>
+
     </div>
-
-    <script th:src="@{/js/detail.js}"></script>
-
-</div>
 </body>
 </html>

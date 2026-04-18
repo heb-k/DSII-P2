@@ -102,14 +102,14 @@ h2 {
     color: #ffcc00;
 }
 
-form {
+#reviewForm {
     background: #1a1a1a;
     padding: 25px;
     border-radius: 12px;
     margin-top: 15px;
 }
 
-form label {
+#reviewForm label {
     display: block;
     font-weight: bold;
     margin-top: 15px;
@@ -165,7 +165,7 @@ textarea {
     resize: none;
 }
 
-form button {
+#reviewForm button {
     margin-top: 20px;
     padding: 10px 25px;
     background: #ffcc00;
@@ -177,7 +177,7 @@ form button {
     transition: 0.2s;
 }
 
-form button:hover {
+#reviewForm button:hover {
     background: #e6b800;
     transform: scale(1.03);
 }
@@ -422,7 +422,7 @@ form button:hover {
         font-size: 0.95rem;
     }
     
-    form {
+    #reviewForm {
         padding: 15px;
     }
     
@@ -469,7 +469,7 @@ form button:hover {
         font-size: 1.8rem;
     }
     
-    form button {
+    #reviewForm button {
         width: 100%;
         padding: 12px;
     }

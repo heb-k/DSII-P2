@@ -38,14 +38,15 @@ public class SecurityConfigurations {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-        .csrf(csrf -> csrf.disable())
+        .csrf(org.springframework.security.config.Customizer.withDefaults())
 
             .authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/css/**", "/js/**", "/img/**", "/static/**").permitAll()
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/").permitAll()
-                .requestMatchers("/movies/*").authenticated()
-                .requestMatchers("/movies").authenticated()
+                .requestMatchers("/movies/*").permitAll()
+                .requestMatchers("/movies").permitAll()
+                .requestMatchers(org.springframework.http.HttpMethod.GET, "/users/**").permitAll()
                 .anyRequest().authenticated()
             )
             .userDetailsService(authorizationService)  //  <-- OBRIGATÓRIO
@@ -61,6 +62,7 @@ public class SecurityConfigurations {
             .logout((logout) -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/")
+                .permitAll()
             );
 
         return http.build();

@@ -35,7 +35,9 @@ public class MoviesController {
         
         // Check if user needs to set username
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean isLoggedIn = false;
         if (auth != null && auth.isAuthenticated() && !auth.getName().equals("anonymousUser")) {
+            isLoggedIn = true;
             User user = userRepository.findByLogin(auth.getName());
             if (user != null) {
                 if (user.getUsernameField() == null || user.getUsernameField().isEmpty()) {
@@ -50,6 +52,7 @@ public class MoviesController {
         } else {
             model.addAttribute("needsUsername", false);
         }
+        model.addAttribute("isLoggedIn", isLoggedIn);
 
         if (nome != null && !nome.isBlank()) {
 
@@ -91,19 +94,22 @@ public class MoviesController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean alreadyReviewed = false;
         String currentUserId = null;
+        boolean isLoggedIn = false;
         if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
+            isLoggedIn = true;
             User me = userRepository.findByLogin(auth.getName());
             if (me != null) {
                 currentUserId = me.getId();
                 alreadyReviewed = reviewService.hasUserReviewed(id, me.getId());
             }
         }
+        model.addAttribute("isLoggedIn", isLoggedIn);
         model.addAttribute("alreadyReviewed", alreadyReviewed);
         model.addAttribute("currentUserId", currentUserId);
         
         // Check if user is admin
         boolean isAdmin = false;
-        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
+        if (isLoggedIn) {
             isAdmin = auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
         }
